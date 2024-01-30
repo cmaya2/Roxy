@@ -1,5 +1,4 @@
-from datetime import date, datetime
-import sys
+from datetime import datetime
 import psycopg2
 
 

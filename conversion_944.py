@@ -1,6 +1,5 @@
-import os
 import xml.etree.ElementTree as et
-from datetime import date, datetime
+from datetime import datetime
 import psycopg2
 
 

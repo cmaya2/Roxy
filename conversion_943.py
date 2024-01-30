@@ -1,9 +1,5 @@
-import os
 import xml.etree.ElementTree as et
-from datetime import date, datetime
-import sys
-import psycopg2
-import logging
+from datetime import datetime
 
 
 class Convert_943:
