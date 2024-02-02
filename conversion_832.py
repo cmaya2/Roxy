@@ -4,19 +4,23 @@ from datetime import datetime
 
 class Convert_832:
 
-    def __init__(self, formatted_segments):
+    def __init__(self, formatted_segments, path, mantis_import_path, transaction_number, client_id, facility):
         self.formatted_segments = formatted_segments
-        self.seg = ''
+        self.path = path
+        self.mantis_import_path = mantis_import_path
+        self.transaction_number = transaction_number
+        self.client_id = client_id
+        self.facility = facility
 
-    def parse_edi(self, formatted_segments):
+    def parse_edi(self):
 
         # Generate XML and build XML structure for static one time tags and values.
         root = et.Element('ItemMaintenance')
         item_maintenance_header_tag = et.SubElement(root, 'ItemMaintenanceHeader')
         facility_tag = et.SubElement(item_maintenance_header_tag, 'Facility')
-        facility_tag.text = 'WN1'
+        facility_tag.text = self.facility
         client_tag = et.SubElement(item_maintenance_header_tag, 'Client')
-        client_tag.text = '88'
+        client_tag.text = self.client_id
         maintenance_type_tag = et.SubElement(item_maintenance_header_tag, 'MaintenanceType')
         maintenance_type_tag.text = 'Add'
         effective_date_tag = et.SubElement(item_maintenance_header_tag, 'EffectiveDate')
@@ -24,7 +28,7 @@ class Convert_832:
         item_maintenance_detail_tag = et.SubElement(root, 'ItemMaintenanceDetail')
         # Formatting EDI into a nested array
 
-        for seg in formatted_segments:
+        for seg in self.formatted_segments:
             if seg[0] == 'ISA':
                 unique_identifier = seg[13]
             if seg[0] == 'LIN':
@@ -61,8 +65,9 @@ class Convert_832:
         # Generating File after loop
         tree = et.ElementTree(root)
         et.indent(tree, space="\t", level=0)
-        tree.write("C:\\FTP\\GPAEDIProduction\\Integral\\In\\832_88_" + "_" + datetime.now().strftime(
-            "%Y%m%d%H%M%S") + "_" + str(unique_identifier) + ".xml", encoding="UTF-8", xml_declaration=True)
         tree.write(
-            "C:\\FTP\\GPAEDIProduction\\WN1-Roxy\\Out\\Archive\\832\\832_88_" + datetime.now().strftime(
+            self.mantis_import_path + self.transaction_number + "_" + self.client_id + "_" + datetime.now().strftime(
                 "%Y%m%d%H%M%S") + "_" + str(unique_identifier) + ".xml", encoding="UTF-8", xml_declaration=True)
+        tree.write(self.path + "Out\\Archive\\" + self.transaction_number + "\\" + self.transaction_number + "_"
+                   + self.client_id + "_" + datetime.now().strftime("%Y%m%d%H%M%S") + "_" + str(unique_identifier) +
+                   ".xml", encoding="UTF-8", xml_declaration=True)

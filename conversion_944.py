@@ -3,22 +3,19 @@ from datetime import datetime
 import psycopg2
 
 
-# Database settings
-connection = psycopg2.connect(
-    host='localhost',
-    database='sequencer',
-    user='Admin',
-    password='@Dm1n'
-)
-
 class Convert_944:
 
-    def __init__(self, XML):
+    def __init__(self, XML, path, mantis_import_path, transaction_number, client_id, connection):
         self.XML = XML
+        self.path = path
+        self.mantis_import_path = mantis_import_path
+        self.transaction_number = transaction_number
+        self.client_id = client_id
+        self.connection = connection
 
-    def parse_edi(self):
+    def parse_xml(self):
 
-        ## Load in the XML based on function that checks directory of file out of Class structure
+        # Load in the XML based on function that checks directory of file out of Class structure
         oak = et.parse(self.XML)
         rooted = oak.getroot()
         counter = 0
@@ -114,12 +111,12 @@ class Convert_944:
                         seal_number = ReferenceInformation_child_element.text
                     elif ReferenceInformation_child_element.tag == 'ReferenceNumber':
                         reference_number = ReferenceInformation_child_element.text
-        cursor = connection.cursor()
+        cursor = self.connection.cursor()
         cursor.execute("SELECT sequence_number FROM public.sequence where client='Roxy'")
         data = cursor.fetchone()
         sequence_number = int(data[0]) + 1
         cursor.execute("update sequence set sequence_number =" + str(sequence_number) + " where client='Roxy'")
-        connection.commit()
+        self.connection.commit()
         header_string = 'ISA*00*          *00*          *ZZ*GPALOGISTICS   *ZZ*BWGROXYPROD    *' + datetime.now().strftime("%y%m%d") + '*' + datetime.now().strftime("%H%M") + '*X*00401*' + str(sequence_number) + '*0*P*>~' \
                         'GS*RE*GPALOGISTICS*BWGROXYPROD*' + datetime.now().strftime("%Y%m%d") + '*' + datetime.now().strftime("%H%M") + '*' + str(sequence_number)[-4:] + '*X*004010~' \
                         'ST*944*1001~' \
@@ -209,10 +206,10 @@ class Convert_944:
                         'GE*1*' + str(sequence_number)[-4:] + '~' \
                         'IEA*1*' + str(sequence_number) + '~'
         completed_string = header_string + footer_string
-        with open("C:\\FTP\\GPAEDIProduction\\WN1-Roxy\\Out\\944_88_" + str(sequence_number) + "_" +
-                  datetime.now().strftime("%Y%m%d%H%M%S" + ".txt"), "w") as acknowledgement_file:
+        with open(self.path + "Out\\" + self.transaction_number + "_" + self.client_id + "_" + str(depositor_order_number)
+                  + "_" + datetime.now().strftime("%Y%m%d%H%M%S" + ".txt"), "w") as acknowledgement_file:
             acknowledgement_file.write(completed_string)
-        with open("C:\\FTP\\GPAEDIProduction\\WN1-Roxy\\Out\\Archive\\944\\944_88_" + str(
-                sequence_number) + "_" +
-                  datetime.now().strftime("%Y%m%d%H%M%S" + ".txt"), "w") as acknowledgement_file:
+        with open(self.path + "Out\\Archive\\" + self.transaction_number + "\\" + self.transaction_number + "_" +
+                  self.client_id + "_" + str(depositor_order_number) + "_" + datetime.now().strftime("%Y%m%d%H%M%S" + ".txt"),
+                  "w") as acknowledgement_file:
             acknowledgement_file.write(completed_string)
