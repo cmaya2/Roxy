@@ -87,7 +87,7 @@ def main():
                 server = str(path).split("\\")
                 smtp_handler = logging.handlers.SMTPHandler(mailhost=("smtp.office365.com", 587),
                                                             fromaddr="noreply@gpalogisticsgroup.com",
-                                                            toaddrs=["cmaya@gpalogisticsgroup.com"],
+                                                            toaddrs=["cmaya@gpalogisticsgroup.com", "gpaops20@gpalogisticsgroup.com", "reyna.diaz@gpalogisticsgroup.com", "gpaops18@gpalogisticsgroup.com"],
                                                             subject=str(client_name[0]) + "-" + server[4] + ": " + file + " Failed to process.",
                                                             credentials=('noreply@gpalogisticsgroup.com', 'Turn*17300'),
                                                             secure=())

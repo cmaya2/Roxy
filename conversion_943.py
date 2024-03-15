@@ -21,7 +21,6 @@ class Convert_943:
                 root = et.Element('Transfer')
                 transfer_header_tag = et.SubElement(root, 'TransferHeader')
                 facility_tag = et.SubElement(transfer_header_tag, 'Facility')
-                facility_tag.text = self.facility
                 client_tag = et.SubElement(transfer_header_tag, 'Client')
                 client_tag.text = self.client_id
                 depositor_order_number_tag = et.SubElement(transfer_header_tag, 'DepositorOrderNumber')
@@ -70,13 +69,17 @@ class Convert_943:
                 quantity_unit_of_measure_tag = et.SubElement(item_tag, 'QuantityUnitOfMeasure')
                 quantity_unit_of_measure_tag.text = 'EA'
                 item_purchase_order_number_tag = et.SubElement(item_tag, 'PurchaseOrderNumber')
+                stock_po_number_tag = et.SubElement(item_tag, 'StockPONumber')
                 order_line_number_tag = et.SubElement(item_tag, 'OrderLineNumber')
+            if seg[0] == "N1" and seg[1] == "SF":
+                facility_tag.text = seg[4]
             if seg[0] == 'G69':
                 item_description_tag.text = seg[1]
             if seg[0] == 'N9' and seg[1] == 'ER':
                 depositor_order_number_tag.text = seg[2]
             if seg[0] == 'N9' and seg[1] == 'PO':
                 item_purchase_order_number_tag.text = seg[2]
+                stock_po_number_tag.text = seg[2]
             if seg[0] == 'N9' and seg[1] == 'LI':
                 order_line_number_tag.text = seg[2]
             if seg[0] == 'N9' and seg[1] == 'LT':

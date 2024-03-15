@@ -55,7 +55,6 @@ class Convert_940:
                 root = et.Element('Order')
                 order_header_tag = et.SubElement(root, 'OrderHeader')
                 facility_tag = et.SubElement(order_header_tag, 'Facility')
-                facility_tag.text = self.facility
                 client_tag = et.SubElement(order_header_tag, 'Client')
                 client_tag.text = self.client_id
                 depositor_order_number_tag = et.SubElement(order_header_tag, 'DepositorOrderNumber')
@@ -126,6 +125,8 @@ class Convert_940:
                     lot_number = seg[4]
                 else:
                     lot_number = 'WH'
+            if seg[0] == "N1" and seg[1] == "SF":
+                facility_tag.text = seg[4]
             if seg[0] == "N1" and seg[1] == "ST":
                 identifier = 1
                 ship_to_name_tag.text = seg[2].replace("'", '')

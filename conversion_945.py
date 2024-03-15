@@ -308,7 +308,7 @@ class Convert_945:
                                     elif Item_sub_element.tag == 'PackVolumeUnitOfMeasure':
                                         pack_volume_unit_of_measure = Item_sub_element.text
                         # Generating dynamic values.
-                                    body_string = 'W12*CC*' + str(ordered_quantity) + '*' + str(shipped_quantity) + '**EA**UP*' + str(case_upc) + '*********' + str(color) + '****' + str(size) + '~' \
+                                    body_string = 'W12*CC*' + str(ordered_quantity) + '*' + str(shipped_quantity) + '**EA**UP*' + str(case_upc) + '*************' + str(size) + '~' \
                                                   'N9*LI*' + str(order_line_number) + '~'
                                 segment_count = segment_count + 2
                                 header_string = header_string + body_string
