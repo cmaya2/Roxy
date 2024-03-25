@@ -140,6 +140,8 @@ class Convert_944:
                                 gtin = Item_sub_element.text
                             elif Item_sub_element.tag == 'ReceivedQuantity':
                                 received_quantity = Item_sub_element.text
+                                if received_quantity == "0":
+                                    raise Exception("This transaction contains a value of 0 for the received quantity")
                             elif Item_sub_element.tag == 'ShippedQuantity':
                                 shipped_quantity = Item_sub_element.text
                             elif Item_sub_element.tag == 'QuantityUnitOfMeasure':

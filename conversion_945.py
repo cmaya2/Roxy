@@ -28,6 +28,7 @@ class Convert_945:
         box_weight = ''
         shipment_weight_present = False
         total_shipment_weight = 0
+        items_exist = False
 
         carriers = {
             'Ground': '03',
@@ -242,6 +243,7 @@ class Convert_945:
                                 ordered_quantity = ''
                                 shipped_quantity = ''
                                 case_upc = ''
+                                items_exist = True
                                 for Item_sub_element in Container_sub_element:
                                     if Item_sub_element.tag == 'OrderLineNumber':
                                         order_line_number = Item_sub_element.text
@@ -314,11 +316,13 @@ class Convert_945:
                                 header_string = header_string + body_string
         if total_shipment_weight == 0:
             raise Exception("This order has no total shipment weight")
+        if items_exist is False:
+            raise Exception("This order failed to process because it is missing items on the detail line.")
         segment_count = segment_count + 11
         footer_string = 'W03*' + str(total_quantity_shipped) + '*' + str(total_shipment_weight) + '*LB*1*CF~' \
                         'SE*' + str(segment_count) + '*1001~' \
                         'GE*1*' + str(sequence_number)[-4:] + '~' \
-                        'IEA*1*' + str(sequence_number) +'~'
+                        'IEA*1*' + str(sequence_number) + '~'
         completed_string = header_string + footer_string
         with open(self.path + "Out\\" + self.transaction_number + "_" + self.client_id + "_" + str(depositor_order_number)
                   + "_" + datetime.now().strftime("%Y%m%d%H%M%S" + ".txt"), "w") as acknowledgement_file:

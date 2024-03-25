@@ -42,7 +42,9 @@ class Convert_940:
             'CP-UPS GROUND': '03',
             'PP-UPS SUREPOST': '93',
             'SA-2ND DAY AIR': '02',
-            'UPS 2ND DAY AIR': '02'
+            'UPS 2ND DAY AIR': '02',
+            '03-UPS GROUND': '03',
+            'FEDEX_2_DAY_AM': 'FEDEX_2_DAY_AM'
         }
 
         for seg in self.formatted_segments:
@@ -121,10 +123,7 @@ class Convert_940:
             # Parsing and Mapping data
 
             if seg[0] == "N1" and seg[1] == "WH":
-                if seg[4] == '02':
-                    lot_number = seg[4]
-                else:
-                    lot_number = 'WH'
+                lot_number = seg[4]
             if seg[0] == "N1" and seg[1] == "SF":
                 facility_tag.text = seg[4]
             if seg[0] == "N1" and seg[1] == "ST":
