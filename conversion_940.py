@@ -125,8 +125,6 @@ class Convert_940:
 
             if seg[0] == "N1" and seg[1] == "WH":
                 lot_number = seg[4]
-            if seg[0] == "N1" and seg[1] == "SF":
-                facility_tag.text = seg[4]
             if seg[0] == "N1" and seg[1] == "ST":
                 identifier = 1
                 ship_to_name_tag.text = seg[2].replace("'", '')
