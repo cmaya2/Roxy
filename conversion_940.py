@@ -57,6 +57,7 @@ class Convert_940:
                 root = et.Element('Order')
                 order_header_tag = et.SubElement(root, 'OrderHeader')
                 facility_tag = et.SubElement(order_header_tag, 'Facility')
+                facility_tag.text = self.facility
                 client_tag = et.SubElement(order_header_tag, 'Client')
                 client_tag.text = self.client_id
                 depositor_order_number_tag = et.SubElement(order_header_tag, 'DepositorOrderNumber')

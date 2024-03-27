@@ -21,6 +21,7 @@ class Convert_943:
                 root = et.Element('Transfer')
                 transfer_header_tag = et.SubElement(root, 'TransferHeader')
                 facility_tag = et.SubElement(transfer_header_tag, 'Facility')
+                facility_tag.text = self.facility
                 client_tag = et.SubElement(transfer_header_tag, 'Client')
                 client_tag.text = self.client_id
                 depositor_order_number_tag = et.SubElement(transfer_header_tag, 'DepositorOrderNumber')
