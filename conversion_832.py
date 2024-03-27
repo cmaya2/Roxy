@@ -48,6 +48,7 @@ class Convert_832:
                 dimension_unit_of_measure_tag = et.SubElement(item_header_tag, 'DimensionUnitOfMeasure')
                 dimension_unit_of_measure_tag.text = 'IN'
                 pack_quantity_tag = et.SubElement(item_header_tag, 'PackQuantity')
+                pack_quantity_tag.text = '1'
                 pack_size_unit_of_measure_tag = et.SubElement(item_header_tag, 'PackSizeUnitOfMeasure')
                 pack_size_unit_of_measure_tag.text = 'EA'
             if seg[0] == 'PID' and seg[2] == '73':
@@ -58,8 +59,8 @@ class Convert_832:
             if seg[0] == 'PID' and seg[2] == 'DM':
                 item_number = item_number + "-" + seg[5]
                 item_number_tag.text = str(item_number).replace('\n', '')
-            if seg[0] == 'G55':
-                pack_quantity_tag.text = seg[13]
+            # if seg[0] == 'G55':
+            #     pack_quantity_tag.text = seg[13]
 
 
         # Generating File after loop
