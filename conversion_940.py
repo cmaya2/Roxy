@@ -184,7 +184,10 @@ class Convert_940:
                 mark_for_country_tag.text = 'US'
             if seg[0] == "N9" and seg[1] == "DP":
                 department_tag.text = seg[2]
-                e50_tag.text = seg[3]
+                try:
+                    e50_tag.text = seg[3]
+                except IndexError:
+                    pass
             if seg[0] == "N9" and seg[1] == "AI":
                 vendor_number_tag.text = seg[2]
             if seg[0] == "N9" and seg[1] == "DX":
