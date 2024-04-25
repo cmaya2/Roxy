@@ -233,6 +233,8 @@ class Convert_940:
                 routing_tag.text = carriers.get(seg[5])
                 if routing_tag.text == None:
                     routing_tag.text = 'ROUT'
+                if carrier_code_tag.text == "UPSN":
+                    carrier_code_tag.text = "UPSNREST"
             if seg[0] == "W01":
                 order_line_tag = et.SubElement(order_detail_tag, 'OrderLine')
                 order_line_number_tag = et.SubElement(order_line_tag, 'OrderLineNumber')
