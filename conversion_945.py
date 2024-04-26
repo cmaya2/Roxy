@@ -160,6 +160,8 @@ class Convert_945:
                         else:
                             majors_order = 0
                             carrier_code = ReferenceInformation_child_element.text
+                            if carrier_code == "UPSNREST":
+                                carrier_code = "UPSN"
             if element.tag == 'TransportationInformation':
                 carrier_code_majors = ''
                 routing_majors = ''
@@ -171,6 +173,8 @@ class Convert_945:
                             shipment_method_of_payment = TransporationInformation_child_element.text
                     if TransporationInformation_child_element.tag == 'CarrierCode':
                         carrier_code_majors = TransporationInformation_child_element.text
+                        if carrier_code_majors == "UPSNREST":
+                            carrier_code_majors = "UPSN"
                     if TransporationInformation_child_element.tag == 'Routing':
                         routing_majors = TransporationInformation_child_element.text
                         if TransporationInformation_child_element.text in carriers:

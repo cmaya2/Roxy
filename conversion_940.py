@@ -47,6 +47,8 @@ class Convert_940:
             'FEDEX_2_DAY_AM': 'FEDEX_2_DAY_AM'
         }
 
+        custom_memo_customers = ['RIDETHEW', 'NORTHSHORE', 'JACKSSUR', 'ATHLEISURE']
+
         for seg in self.formatted_segments:
             if seg[0] == "ISA":
                 global isa
@@ -220,8 +222,16 @@ class Convert_940:
 
                 # joining all NTE segments and applying it to the warhouse_instructions tag with a limit of 410 characters
                 nte_full_line = ' '.join(nte_line)
-
-                warehouse_instructions_tag.text = nte_full_line[:410]
+                if customer_name == 'RIDETHEW':
+                    warehouse_instructions_tag.text = "** For small shipments, ship UPS Collect account # A2564T ** LP 04/26/21 ** Shipments +250 lbs, email freightcc@unishippers.com ** LP"
+                elif customer_name == 'NORTHSHORE':
+                    warehouse_instructions_tag.text = "*** + Ship every Thursday via The Delivery People Collect at LAX@thedeliverypeople.com Ph#808-484-2188 or Ph#808-870-0295 Do not ship UPS direct to HI"
+                elif customer_name == 'JACKSSUR':
+                    warehouse_instructions_tag.text = "*** Customer pick-ups occur once a week on Wednesdays"
+                elif customer_name == 'ATHLEISURE':
+                    warehouse_instructions_tag.text = "***Request all shipments routing instructions at Pete@SunDiego.com; whs@sundiego.com *Ship COLLECT*- When the Account approves FedEx as a carrier, ship FXC"
+                else:
+                    warehouse_instructions_tag.text = nte_full_line[:410]
 
                 # Clearing nte_line for next iteration
                 nte_line = []
