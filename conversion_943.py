@@ -84,10 +84,7 @@ class Convert_943:
             if seg[0] == 'N9' and seg[1] == 'LI':
                 order_line_number_tag.text = seg[2]
             if seg[0] == 'N9' and seg[1] == 'LT':
-                if seg[2] == '02':
-                    lot_number_tag.text = seg[2]
-                else:
-                    lot_number_tag.text = 'WH'
+                lot_number_tag.text = seg[2]
             if seg[0] == 'SE':
                 # Generating File after loop
                 tree = et.ElementTree(root)

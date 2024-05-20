@@ -1,7 +1,17 @@
 import xml.etree.ElementTree as et
 from datetime import datetime
 import psycopg2
+import pyodbc
 
+
+# SQL Settings
+cnxn_str = ("Driver={SQL Server};"
+            "Server=10.1.1.114;"
+            "Database=LVS3Plus;"
+            "UID=sa;"
+            "PWD=@Dm1n;")
+cnxn = pyodbc.connect(cnxn_str)
+cursor2 = cnxn.cursor()
 
 class Convert_945:
 
@@ -140,6 +150,10 @@ class Convert_945:
                         bill_of_lading_number = ReferenceInformation_child_element.text
                     elif ReferenceInformation_child_element.tag == 'ProbillNumber':
                         probill_number = ReferenceInformation_child_element.text
+                        if probill_number == 'na':
+                            probill_number = ''
+                        elif probill_number == 'NA':
+                            probill_number = ''
                     elif ReferenceInformation_child_element.tag == 'ContainerNumber':
                         waybill_holding = ReferenceInformation_child_element.text
                     elif ReferenceInformation_child_element.tag == 'SealNumber':
@@ -175,6 +189,16 @@ class Convert_945:
                         carrier_code_majors = TransporationInformation_child_element.text
                         if carrier_code_majors == "UPSNREST":
                             carrier_code_majors = "UPSN"
+                        if carrier_code_majors == "USPS":
+                            cursor2.execute("select man_ID from LV_Manifest where man_Code='" + depositor_order_number + "-12118'")
+                            man_ID = cursor2.fetchone()
+                            cursor2.execute("select mac_TotalBaseCharge from LV_ManifestCharges where mac_ManifestID='" + str(man_ID[0]) + "'")
+                            data = cursor2.fetchone()
+                            usps_freight_charge = data[0]
+                            cursor2.close()
+                            if len(str(usps_freight_charge).split(".")[1]) == 3:
+                                freight_charge = str(usps_freight_charge)[:-1]
+                                print(freight_charge)
                     if TransporationInformation_child_element.tag == 'Routing':
                         routing_majors = TransporationInformation_child_element.text
                         if TransporationInformation_child_element.text in carriers:
@@ -196,7 +220,7 @@ class Convert_945:
         header_string = 'ISA*00*          *00*          *ZZ*GPALOGISTICS   *ZZ*BWGROXYPROD    *' + datetime.now().strftime("%y%m%d") + '*' + datetime.now().strftime("%H%M") + '*X*00401*' + str(sequence_number) + '*0*P*>~' \
                         'GS*SW*GPALOGISTICS*BWGROXYPROD*' + datetime.now().strftime("%Y%m%d") + '*' + datetime.now().strftime("%H%M") + '*' + str(sequence_number)[-4:] + '*X*004010~' \
                         'ST*945*1001~' \
-                        'W06*N*' + depositor_order_number + '*' + ship_date + '*' + bill_of_lading_number + '*' + probill_number + '*' + purchase_order_number + '~' \
+                        'W06*N*' + depositor_order_number + '*' + ship_date + '*' + bill_of_lading_number + '*' + probill_number + '*' + purchase_order_number + '**~' \
                         'N1*ST*' + ship_to_name + '*92*' + ship_to_code.replace("!", "") + '~' \
                         'N3*' + ship_to_address1 + '~' \
                         'N4*' + ship_to_city + '*' + ship_to_state + '*' + ship_to_zipcode + '*' + ship_to_country + '~' \

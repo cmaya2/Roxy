@@ -7,6 +7,7 @@ from conversion_943 import *
 from conversion_944 import *
 from conversion_945 import *
 from conversion_997 import *
+from notifications import *
 
 
 # Database settings
@@ -62,12 +63,16 @@ def main():
                     conversion.parse_edi()
                     conversion_997 = Convert_997(formatted_segments, path, mantis_import_path, filename[1], client_id, facility, connection)
                     conversion_997.produce_997()
+                    send_email = create_notification_940(formatted_segments)
+                    send_email.parse_edi_email()
                     os.replace(path + "In\\" + file, path + "In\\Archive\\" + filename[1] + "\\" + rem_extension[0] + '_' + datetime.now().strftime("%Y%m%d%H%M%S") + ".txt")
                 if filename[1] == "943":
                     conversion = Convert_943(formatted_segments, path, mantis_import_path, filename[1], client_id, facility)
                     conversion.parse_edi()
                     conversion_997 = Convert_997(formatted_segments, path, mantis_import_path, filename[1], client_id, facility, connection)
                     conversion_997.produce_997()
+                    # send_email = create_notification_943(formatted_segments)
+                    # send_email.parse_edi_email()
                     os.replace(path + "In\\" + file, path + "In\\Archive\\" + filename[1] + "\\" + rem_extension[0] + '_' + datetime.now().strftime("%Y%m%d%H%M%S") + ".txt")
                 if filename[0] == "944":
                     conversion = Convert_944(path + "In\\" + file, path, mantis_import_path, filename[0], client_id, connection)
@@ -94,7 +99,7 @@ def main():
                 formatter = logging.Formatter('%(asctime)s - %(name)s - %(message)s')
                 fileHandler.setFormatter(formatter)
                 logger.addHandler(fileHandler)
-                logger.addHandler(smtp_handler)
+                # logger.addHandler(smtp_handler)
                 logger.exception("An exception was triggered")
                 os.replace(path + "In\\" + file, path + "In\\err_" + file)
         except IndexError:
