@@ -13,6 +13,7 @@ cnxn_str = ("Driver={SQL Server};"
 cnxn = pyodbc.connect(cnxn_str)
 cursor2 = cnxn.cursor()
 
+
 class Convert_945:
 
     def __init__(self, XML, path, mantis_import_path, transaction_number, client_id, connection):
@@ -39,6 +40,9 @@ class Convert_945:
         shipment_weight_present = False
         total_shipment_weight = 0
         items_exist = False
+        tracking_number = ""
+        usps_tracking_number = ""
+        initial_tracking = True
 
         carriers = {
             'Ground': '03',
@@ -54,15 +58,19 @@ class Convert_945:
             'Worldwide Saver': '65'
         }
 
-        if counter == 0:
-            for element in rooted.iter():
-                if element.tag == 'ShipmentDetail':
-                    for ShipmentDetail_child_element in element:
-                        if ShipmentDetail_child_element.tag == 'Container':
-                            for Container_sub_element in ShipmentDetail_child_element:
-                                if Container_sub_element.tag == 'TrackingNumber':
-                                    if Container_sub_element.text is None:
-                                        skip = False
+        for element in rooted.iter():
+            if element.tag == 'ShipmentDetail':
+                for ShipmentDetail_child_element in element:
+                    if ShipmentDetail_child_element.tag == 'Container':
+                        for Container_sub_element in ShipmentDetail_child_element:
+                            if Container_sub_element.tag == 'TrackingNumber':
+                                if initial_tracking is True:
+                                    tracking_number = Container_sub_element.text
+                                    usps_tracking_number = Container_sub_element.text
+                                    initial_tracking = False
+                                if Container_sub_element.text is None:
+                                    skip = False
+
         for element in rooted.iter():
             if element.tag == 'ShipmentHeader':
                 for ReceiptHeader_child_element in element:
@@ -171,6 +179,8 @@ class Convert_945:
                     elif ReferenceInformation_child_element.tag == 'E52':
                         if ReferenceInformation_child_element.text == 'ROUT':
                             majors_order = 1
+                        elif ReferenceInformation_child_element.text == 'PKUP':
+                            majors_order = 1
                         else:
                             majors_order = 0
                             carrier_code = ReferenceInformation_child_element.text
@@ -190,15 +200,13 @@ class Convert_945:
                         if carrier_code_majors == "UPSNREST":
                             carrier_code_majors = "UPSN"
                         if carrier_code_majors == "USPS":
-                            cursor2.execute("select man_ID from LV_Manifest where man_Code='" + depositor_order_number + "-12118'")
+                            cursor2.execute("select man_ID from LV_Manifest where man_TrackingNr='" + usps_tracking_number + "'")
                             man_ID = cursor2.fetchone()
                             cursor2.execute("select mac_TotalBaseCharge from LV_ManifestCharges where mac_ManifestID='" + str(man_ID[0]) + "'")
                             data = cursor2.fetchone()
                             usps_freight_charge = data[0]
-                            cursor2.close()
                             if len(str(usps_freight_charge).split(".")[1]) == 3:
                                 freight_charge = str(usps_freight_charge)[:-1]
-                                print(freight_charge)
                     if TransporationInformation_child_element.tag == 'Routing':
                         routing_majors = TransporationInformation_child_element.text
                         if TransporationInformation_child_element.text in carriers:

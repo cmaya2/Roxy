@@ -99,7 +99,7 @@ def main():
                 formatter = logging.Formatter('%(asctime)s - %(name)s - %(message)s')
                 fileHandler.setFormatter(formatter)
                 logger.addHandler(fileHandler)
-                # logger.addHandler(smtp_handler)
+                logger.addHandler(smtp_handler)
                 logger.exception("An exception was triggered")
                 os.replace(path + "In\\" + file, path + "In\\err_" + file)
         except IndexError:
